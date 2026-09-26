@@ -125,8 +125,8 @@ and no errors in the browser console.
 
 The published copy is the repository `yperikov/world-rivers-tiles` (GitHub Pages). Copy
 `index.html`, `stars.json`, `css/` and `js/` into it, commit and push. The tiles only need
-copying when they have been re-rendered: the page needs the `etopo/` folder; the old `{z}` folders
-are not used, so leave them out of the published repo (about 100 MB less). If you change the tile
+copying when they have been re-rendered: the page needs the `etopo/` folder. The published repo also keeps the
+old `{z}` folders (first tile set, unused; the user chose to keep them, 2026-09-26). If you change the tile
 set, re-sample `ICE_COLOUR` and `ARCTIC_SEA_COLOUR` in `js/config.js` from the new tiles' edge rows
 (recipe in the FirstMap project's `notes/lessons-learned.md`).
 
