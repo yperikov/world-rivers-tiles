@@ -11,7 +11,7 @@
  * switch requested during page load is remembered and applied on the map's "load" event.
  */
 import { getMode, setMode, onModeChange, GLOBE, FLAT } from './view-mode.js';
-import { showSouthCap } from './map-style.js';
+import { showPolarCaps } from './map-style.js';
 
 /**
  * A MapLibre control (an object with onAdd/onRemove) holding the two buttons.
@@ -66,7 +66,7 @@ export function addModeSwitch(map) {
   let styleLoaded = false;
   const applyToMap = () => {
     map.setProjection({ type: getMode() === FLAT ? 'mercator' : 'globe' });
-    showSouthCap(map, getMode() === GLOBE);
+    showPolarCaps(map, getMode() === GLOBE);
   };
 
   map.on('load', () => {

@@ -4,35 +4,37 @@
  * Layers, bottom to top:
  *   1. "background" — plain sea colour, seen only until the tiles have loaded
  *   2. "rivers"     — the world rivers map: raster tiles made in QGIS
- *   3. "south-cap"  — a soft ice-coloured cap over the South Pole, globe only (see below)
+ *   3. "south-cap", "north-cap" — soft caps over the poles, globe only (see below)
  *
  * The measure tool and the star sky are NOT map layers: they draw on their own canvases
  * (see measure-overlay.js and star-sky.js for why).
  */
 import {
   TILE_URL, TILE_MIN_ZOOM, TILE_MAX_ZOOM,
-  BACKGROUND_COLOUR, ICE_COLOUR, MERCATOR_EDGE
+  BACKGROUND_COLOUR, ICE_COLOUR, ARCTIC_SEA_COLOUR, MERCATOR_EDGE
 } from './config.js';
 import { GLOBE, FLAT } from './view-mode.js';
 
 /**
- * The South Pole cap, as a set of thin rings.
+ * A polar cap, as a set of thin rings (sign -1 = South Pole, +1 = North Pole).
  *
  * Why: the tiles stop at 85.05°S (the Web Mercator edge). On the globe MapLibre fills the rest
  * of the way to the pole by stretching each pixel of the tiles' last row into a long wedge,
- * which looks like a streaky fan over Antarctica. MapLibre has no option to change this.
+ * which looks like a streaky fan over Antarctica and the Arctic Ocean. MapLibre has no option to change this.
  *
  * Fix: cover that area with ice colour. A single disc would show a hard edge, so the cap is
  * made of `steps` rings between `fadeFrom`°S and the tile edge, each a little more opaque
  * (0 -> 1 with a smooth S-curve). MapLibre extends the last ring over the pole itself.
- * The Arctic edge of the tiles is plain sea, so the North Pole needs no cap.
+ * Both poles get the same treatment: ice colour in the south, sea colour in the north.
  */
-function southCapRings(fadeFrom = 82, steps = 24) {
-  // A closed ring between two latitudes, all the way round the Earth
+function capRings(sign, fadeFrom = 82, steps = 24) {
+  // A closed ring between two latitudes, all the way round the Earth. The north ring is
+  // walked the other way round, so that "the pole side" is the inside in both hemispheres.
   const ring = (lat1, lat2) => {
     const coords = [];
-    for (let lon = -180; lon <= 180; lon += 10) coords.push([lon, -lat1]);
-    for (let lon = 180; lon >= -180; lon -= 10) coords.push([lon, -lat2]);
+    const [a, b] = sign < 0 ? [lat1, lat2] : [lat2, lat1];
+    for (let lon = -180; lon <= 180; lon += 10) coords.push([lon, sign * a]);
+    for (let lon = 180; lon >= -180; lon -= 10) coords.push([lon, sign * b]);
     coords.push(coords[0]);
     return coords;
   };
@@ -49,6 +51,15 @@ function southCapRings(fadeFrom = 82, steps = 24) {
     });
   }
   return { type: 'FeatureCollection', features };
+}
+
+/** A fill layer drawing one polar cap; visible on the globe only (the flat map has no fan). */
+function capLayer(id, source, colour, mode) {
+  return {
+    id, type: 'fill', source,
+    layout: { visibility: mode === GLOBE ? 'visible' : 'none' },
+    paint: { 'fill-color': colour, 'fill-opacity': ['get', 'opacity'], 'fill-antialias': false }
+  };
 }
 
 /** The full MapLibre style for the given view (GLOBE or FLAT). */
@@ -69,24 +80,22 @@ export function buildStyle(mode) {
         minzoom: TILE_MIN_ZOOM,
         maxzoom: TILE_MAX_ZOOM
       },
-      southCap: { type: 'geojson', data: southCapRings() }
+      southCap: { type: 'geojson', data: capRings(-1) },
+      northCap: { type: 'geojson', data: capRings(1) }
     },
 
     layers: [
       { id: 'background', type: 'background', paint: { 'background-color': BACKGROUND_COLOUR } },
       { id: 'rivers', type: 'raster', source: 'rivers', paint: { 'raster-fade-duration': 0 } },
-      {
-        id: 'south-cap',
-        type: 'fill',
-        source: 'southCap',
-        layout: { visibility: mode === GLOBE ? 'visible' : 'none' }, // the flat map has no fan
-        paint: { 'fill-color': ICE_COLOUR, 'fill-opacity': ['get', 'opacity'], 'fill-antialias': false }
-      }
+      capLayer('south-cap', 'southCap', ICE_COLOUR, mode),
+      capLayer('north-cap', 'northCap', ARCTIC_SEA_COLOUR, mode)
     ]
   };
 }
 
-/** Show the south cap on the globe, hide it on the flat map (called when the view changes). */
-export function showSouthCap(map, visible) {
-  map.setLayoutProperty('south-cap', 'visibility', visible ? 'visible' : 'none');
+/** Show the polar caps on the globe, hide them on the flat map (called when the view changes). */
+export function showPolarCaps(map, visible) {
+  for (const id of ['south-cap', 'north-cap']) {
+    map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+  }
 }

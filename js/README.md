@@ -20,7 +20,7 @@ js/
   config.js             shared settings: URLs, start view, zoom range, colours
   maplibre.js           loads MapLibre GL JS (the only place with its version)
   view-mode.js          which view is shown (globe / flat); #globe / #flat in the address
-  map-style.js          MapLibre style: tiles, background, South Pole cap
+  map-style.js          MapLibre style: tiles, background, South and North Pole caps
   start-view.js         start zoom so the globe fills 90% of the screen
   mode-switch.js        2D/3D buttons; applies the view to the map
   fullscreen-button.js  full-screen button (left out where unsupported, e.g. iPhone)
@@ -82,7 +82,7 @@ Modules talk to each other only through imports and `view-mode.js` (`getMode()`,
    `start-view.js` falls back to zoom 1. A NaN zoom crashes MapLibre.
 7. **The atmosphere halo is on by default** in MapLibre; `map-style.js` sets
    `atmosphere-blend: 0` to remove it.
-8. **The flat map shows no stars and no South Pole cap**; both are globe-only on purpose.
+8. **The flat map shows no stars and no polar caps**; both are globe-only on purpose.
 
 ## Testing locally
 

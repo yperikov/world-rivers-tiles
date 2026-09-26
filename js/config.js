@@ -41,6 +41,7 @@ export const GLOBE_START_FILL = 0.9;
 /** Colours used in more than one place. */
 export const BACKGROUND_COLOUR = '#e3edf2'; // light blue-grey, the map's sea colour
 export const ICE_COLOUR = '#e7e4dd';        // Antarctic ice, sampled from the tiles
+export const ARCTIC_SEA_COLOUR = '#9fc3dc'; // Arctic Ocean at the tiles' north edge, sampled from the tiles
 export const MEASURE_COLOUR = '#e8412c';    // measure line: red-orange, stands out from rivers and stars
 
 /**
