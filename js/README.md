@@ -10,11 +10,12 @@ Live: https://yperikov.github.io/world-rivers-tiles/
 ```
 index.html              markup only: stylesheet links, library scripts, <div id="map">
 css/
-  base.css              page layout, light background
+  base.css              page layout, light background, arrow pointer over the map, closed hand while dragging
   star-sky.css          black space + star canvas (3D)
   controls.css          2D/3D switch, pressed look of all buttons, compass cursor
   scale-bar.css         the scale ruler
   measure-tool.css      ruler button, crosshair, measure canvas and labels
+  elevation-readout.css the coordinates + height panel
 js/
   main.js               ENTRY POINT: creates the map, switches every feature on
   config.js             shared settings: URLs, start view, zoom range, colours
@@ -31,6 +32,9 @@ js/
   geodesy.js            WGS84 distances and shortest paths (GeographicLib)
   measure-overlay.js    draws measured lines, points and labels on an own canvas
   measure-tool.js       measure tool behaviour: button, clicks, keys
+  map-point.js          the [lng, lat] under a mouse/tap event (globe-aware); shared by the tools
+  elevation.js          terrain height at a point from AWS Terrarium tiles (fetch, decode, cache)
+  elevation-readout.js  coordinates + height panel in the bottom right corner: follows the mouse; on touch, tap to read
 stars.json              9,096 stars (Yale Bright Star Catalogue), made by
                         scripts/make_stars.py in the FirstMap project
 {z}/{x}/{y}.jpg         the map tiles, zoom 0-7
@@ -44,8 +48,10 @@ main.js ─┬─ config.js, maplibre.js, view-mode.js, map-style.js, start-view
          ├─ scale-bar.js
          ├─ fullscreen-button.js ── maplibre.js
          ├─ star-sky.js ─────── config.js, view-mode.js, globe-camera.js
-         ├─ measure-tool.js ─┬─ view-mode.js, globe-camera.js, geodesy.js
+         ├─ measure-tool.js ─┬─ view-mode.js, map-point.js, geodesy.js
          │                   └─ measure-overlay.js ── config.js, view-mode.js, globe-camera.js, geodesy.js
+         ├─ elevation-readout.js ─┬─ map-point.js ── view-mode.js, globe-camera.js
+         │                        └─ elevation.js ── config.js
          ├─ press-feedback.js
          └─ globe-camera.js (exposed on window.globeMath for testing)
 ```
@@ -60,6 +66,13 @@ Modules talk to each other only through imports and `view-mode.js` (`getMode()`,
   its CSS is linked in `index.html`. Change both together.
 - **GeographicLib `geographiclib-geodesic` 2.2.0** (MIT, Karney): a plain `<script>` in
   `index.html` that sets `window.geodesic`. If it fails to load, the measure tool is left out.
+- **AWS Terrarium elevation tiles** (`https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png`):
+  fetched at run time by `elevation.js` for the height label (zoom 7, about 1.2 km per pixel;
+  peaks read lower than their true height, e.g. Everest 8,316 m). Free, no key; the bucket sends
+  `Access-Control-Allow-Origin: *`, which canvas decoding needs. Height = R*256 + G + B/256 - 32768.
+  No data beyond ±85.05° latitude, so no label there. Credit (the page has no attribution box):
+  Mapzen Terrain Tiles, github.com/tilezen/joerd/blob/master/docs/attribution.md; mention it in
+  the published repository's README.
 
 ## Things that are easy to break (read before editing)
 
@@ -101,7 +114,8 @@ registry); browsers then refuse to run the modules and the page stays blank, wit
 the console. `serve_tiles.py` forces the right type. GitHub Pages is fine.
 
 Check: both views and switching between them, `#flat` in the address, zoom limits, the
-scale ruler while dragging, the measure tool (including a path over a pole, e.g. from
+scale ruler while dragging, the height label (follows the mouse; tap on a phone; hidden in
+space, over the poles and while measuring), the measure tool (including a path over a pole, e.g. from
 80°N 0° to 80°N 180°, which should be 2,234 km and cross the pole), stars in 3D, phone width,
 and no errors in the browser console.
 

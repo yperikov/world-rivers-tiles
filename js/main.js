@@ -20,6 +20,7 @@ import { addFullscreenButton } from './fullscreen-button.js';
 import { addStarSky } from './star-sky.js';
 import { addMeasureTool } from './measure-tool.js';
 import { addPressFeedback } from './press-feedback.js';
+import { addElevationReadout } from './elevation-readout.js';
 import { globeCamera, globeProject, globeUnproject } from './globe-camera.js';
 
 const container = document.getElementById('map');
@@ -53,6 +54,7 @@ addScaleBar(map); // bottom centre, not a MapLibre control
 addFullscreenButton(map);
 addStarSky(map);
 addMeasureTool(map);
+addElevationReadout(map);
 addPressFeedback(map);
 
 // For poking at the map from the browser console (debugging and tests), e.g.

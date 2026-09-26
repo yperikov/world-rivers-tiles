@@ -22,8 +22,8 @@
  *
  * If the GeographicLib script did not load, the tool is simply not added.
  */
-import { isGlobe, onModeChange } from './view-mode.js';
-import { globeCamera, globeUnproject } from './globe-camera.js';
+import { onModeChange } from './view-mode.js';
+import { pointFromEvent as mapPoint } from './map-point.js';
 import { geodesicsAvailable, geodesicPath, formatDistance } from './geodesy.js';
 import { MeasureOverlay } from './measure-overlay.js';
 
@@ -41,6 +41,7 @@ export function addMeasureTool(map) {
   if (!geodesicsAvailable) return;
 
   const overlay = new MeasureOverlay(map);
+  const pointFromEvent = (event) => mapPoint(map, event); // null in the space around the globe
 
   // --- State ---
   const state = {
@@ -103,16 +104,6 @@ export function addMeasureTool(map) {
     state.hover = null;
     overlay.setTotals(state.segments);
     updateLive();
-  }
-
-  /**
-   * The map point under a mouse event, or null in the space around the globe.
-   * On the globe this uses our own camera maths, which also works beyond 85° latitude
-   * (MapLibre's e.lngLat stops there, and gives some point even for a click in space).
-   */
-  function pointFromEvent(event) {
-    if (isGlobe()) return globeUnproject(globeCamera(map), event.point.x, event.point.y);
-    return [event.lngLat.wrap().lng, event.lngLat.lat];
   }
 
   // --- The ruler button ---

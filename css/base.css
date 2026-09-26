@@ -15,3 +15,15 @@ html, body, #map {
 body, #map {
   background: #e3edf2;
 }
+
+/* Ordinary arrow pointer over the map instead of MapLibre's open hand (`grab`). While a
+   button is held down (dragging the globe) MapLibre's closed hand (`grabbing`, from its
+   `:active` rule) still shows. The ruler's crosshair (measure-tool.css) and the buttons' own
+   cursors still win. */
+.maplibregl-canvas-container.maplibregl-interactive {
+  cursor: default;
+}
+
+.maplibregl-canvas-container.maplibregl-interactive:active {
+  cursor: grabbing;
+}

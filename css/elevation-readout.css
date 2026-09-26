@@ -1,0 +1,59 @@
+/*
+ * elevation-readout.css — the coordinates and terrain height panel (js/elevation-readout.js).
+ * Fixed in the bottom right corner of the map; hidden until a point is known.
+ */
+
+.elevation-label {
+  position: absolute;
+  right: 10px;
+  bottom: 12px; /* level with the scale ruler */
+  display: flex;
+  gap: 12px;
+  z-index: 2;
+  font: 600 14px/20px system-ui, sans-serif;
+  color: #33434d;
+  white-space: nowrap;
+  pointer-events: none; /* never catches clicks or taps */
+  background: rgba(255, 255, 255, 0.6); /* same as the scale ruler (scale-bar.css) */
+  padding: 2px 8px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08); /* same soft outline as the scale ruler */
+  font-variant-numeric: tabular-nums; /* digits of equal width */
+
+  /* Hidden: fades out. (`visibility` is delayed so that the fade can be seen.) */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+}
+
+/* Shown (js adds .visible): fades in slowly */
+.elevation-label.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease;
+}
+
+/* The numbers alone fade while unavailable (dragging, height still loading); the panel stays.
+   js adds .faded. */
+.elevation-label .coordinates,
+.elevation-label .height {
+  transition: opacity 0.3s ease;
+}
+
+.elevation-label.faded .coordinates,
+.elevation-label.faded .height {
+  opacity: 0;
+}
+
+/* Fixed sizes, so nothing jumps as the numbers change. Each part is as wide as its longest
+   text: "89°59'S 179°59'W" and "−10,935 m" (the Mariana Trench; the highest point, 8,849 m,
+   is shorter). */
+.elevation-label .coordinates {
+  width: 114px;
+  text-align: left;
+}
+
+.elevation-label .height {
+  width: 70px;
+  text-align: right;
+}
