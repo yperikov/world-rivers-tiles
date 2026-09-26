@@ -192,6 +192,8 @@
 
   map.addControl(modeSwitch, 'top-right');
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+  // Full-screen on/off (browsers allow it only from a click/tap; Esc also leaves)
+  map.addControl(new maplibregl.FullscreenControl(), 'top-right');
 
   // Press feedback: keep the pressed look for at least 150 ms, so a quick tap is visible too
   map.getContainer().addEventListener('pointerdown', (e) => {
