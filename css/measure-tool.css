@@ -82,3 +82,8 @@ html.measuring .maplibregl-canvas {
 .measure-label.live {
   background: rgba(255, 255, 255, 0.8);
 }
+
+/* A label with no text (the live label while the mouse is on the last point) shows nothing */
+.measure-label:empty {
+  display: none !important; /* beats the inline display:block set from JS */
+}

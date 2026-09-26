@@ -195,6 +195,6 @@ export class MeasureOverlay {
 
     // Labels: running totals at points 2, 3, ...; the live label at the mouse
     this.totalLabels.forEach((label, i) => this.placeLabel(label, points[i + 1], camera, TOTAL_LABEL_OFFSET));
-    this.placeLabel(this.liveLabel, live ? hover : null, camera, LIVE_LABEL_OFFSET);
+    this.placeLabel(this.liveLabel, live && this.liveLabel.textContent ? hover : null, camera, LIVE_LABEL_OFFSET);
   }
 }

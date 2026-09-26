@@ -71,8 +71,9 @@ export function addMeasureTool(map) {
     if (showLive) {
       state.live = geodesicPath(state.points[state.points.length - 1], state.hover);
       const total = state.segments.reduce((sum, segment) => sum + segment.length, 0);
-      overlay.setLiveText(state.segments.length
-        ? `+${formatDistance(state.live.length)} = ${formatDistance(total + state.live.length)}`
+      overlay.setLiveText(
+        Math.round(state.live.length) === 0 ? '' // mouse on the last point: nothing added, no label
+        : state.segments.length ? `+${formatDistance(state.live.length)} = ${formatDistance(total + state.live.length)}`
         : formatDistance(state.live.length));
     }
     scheduleDraw();
