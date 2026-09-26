@@ -26,7 +26,7 @@ js/
   mode-switch.js        2D/3D buttons; applies the view to the map
   fullscreen-button.js  full-screen button (left out where unsupported, e.g. iPhone)
   press-feedback.js     buttons visibly "press in" when clicked/tapped
-  scale-bar.js          fixed-length scale ruler at the bottom centre
+  scale-bar.js          fixed-length scale ruler at the bottom centre (line on top, ticks down, label below)
   globe-camera.js       MapLibre's globe camera reproduced: project/unproject on the sphere
   star-sky.js           real stars behind the globe (reads stars.json)
   geodesy.js            WGS84 distances and shortest paths (GeographicLib)
@@ -34,7 +34,7 @@ js/
   measure-tool.js       measure tool behaviour: button, clicks, keys
   map-point.js          the [lng, lat] under a mouse/tap event (globe-aware); shared by the tools
   elevation.js          terrain height at a point from AWS Terrarium tiles (fetch, decode, cache)
-  elevation-readout.js  coordinates + height panel in the bottom right corner: follows the mouse; on touch, tap to read
+  elevation-readout.js  coordinates + height panel in the bottom right corner (below the ruler on screens under 680 px): follows the mouse; on touch, tap to read
 stars.json              9,096 stars (Yale Bright Star Catalogue), made by
                         scripts/make_stars.py in the FirstMap project
 {z}/{x}/{y}.jpg         the map tiles, zoom 0-7

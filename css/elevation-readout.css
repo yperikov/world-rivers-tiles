@@ -6,11 +6,11 @@
 .elevation-label {
   position: absolute;
   right: 10px;
-  bottom: 12px; /* level with the scale ruler */
+  bottom: 12px; /* same bottom line as the scale ruler */
   display: flex;
   gap: 12px;
   z-index: 2;
-  font: 600 14px/20px system-ui, sans-serif;
+  font: 600 14px/22px system-ui, sans-serif; /* 22 + 2 x 2 padding = 26 px, the height of the scale ruler */
   color: #33434d;
   white-space: nowrap;
   pointer-events: none; /* never catches clicks or taps */
@@ -56,4 +56,16 @@
 .elevation-label .height {
   width: 70px;
   text-align: right;
+}
+
+/* Narrow screens: side by side, the panel (bottom right) would run into the scale ruler
+   (bottom centre, 212 px wide). Below 680 px they would touch or overlap, so the panel moves
+   to the bottom centre and the ruler stands on top of it (scale-bar.css moves the ruler up).
+   Keep the 680 px in step with scale-bar.css. */
+@media (max-width: 680px) {
+  .elevation-label {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

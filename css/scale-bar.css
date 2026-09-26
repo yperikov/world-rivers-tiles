@@ -2,7 +2,8 @@
  * scale-bar.css — the scale ruler at the bottom centre (built by js/scale-bar.js).
  *
  * A ruler with ten divisions (the middle tick longer), semi-transparent so the map and stars
- * show through, readable on both the black space and the light 2D map. It reuses MapLibre's
+ * show through, readable on both the black space and the light 2D map. The line is on top with
+ * the ticks hanging down from it, and the distance is written below. It reuses MapLibre's
  * `.maplibregl-ctrl-scale` class for its basic look and overrides the rest here.
  */
 
@@ -15,24 +16,27 @@
   pointer-events: none;        /* dragging over it still moves the map */
   box-sizing: border-box;      /* the width set from JS includes the side borders */
   margin: 0;
-  padding: 2px 6px 11px;       /* the bottom padding keeps the text clear of the ticks */
+  /* Total height 26 px (top border 2 + padding 7 + line 16 + padding 1), the same as the
+     coordinates and height panel (elevation-readout.css). The top padding keeps the text
+     clear of the ticks. */
+  padding: 7px 6px 1px;
   text-align: center;
   white-space: nowrap;
   background: rgba(255, 255, 255, 0.6);
   color: #33434d;
   border: 2px solid #33434d;
-  border-top: none;
-  border-radius: 0 0 3px 3px;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
   font: 600 12px/16px system-ui, sans-serif;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
 }
 
-/* Division ticks, standing on the bottom line. Their `left` is set from JS. */
+/* Division ticks, hanging down from the top line. Their `left` is set from JS. */
 .scale-center .tick {
   position: absolute;
-  bottom: 0;
+  top: 0;
   width: 1px;
-  height: 5px;
+  height: 4px;
   background: #33434d;
   transform: translateX(-50%);
 }
@@ -40,5 +44,14 @@
 /* The half-way tick (0.5) is longer and thicker */
 .scale-center .tick.mid {
   width: 2px;
-  height: 9px;
+  height: 7px;
+}
+
+/* Narrow screens: the coordinates and height panel (elevation-readout.css) does not fit beside
+   the ruler, so the ruler goes up and the panel stays at the bottom. 46 px = the panel's
+   12 px + its 26 px height + an 8 px gap. Keep the 680 px in step with elevation-readout.css. */
+@media (max-width: 680px) {
+  .maplibregl-ctrl-scale.scale-center {
+    bottom: 46px;
+  }
 }

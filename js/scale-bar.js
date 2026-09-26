@@ -19,7 +19,7 @@
  *    MapLibre offers no bottom-centre control position.
  */
 
-const BAR_MAX_PX = 200;     // bar length; halved from 400 px at the user's request
+const BAR_MAX_PX = 212;     // bar length: the same width as the coordinates + height panel (elevation-readout.css)
 const BAR_MIN_PX = 100;
 const SCREEN_MARGIN_PX = 16; // on narrow screens the bar keeps this gap on each side
 
