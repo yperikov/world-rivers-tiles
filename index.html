@@ -4,34 +4,179 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>World Rivers</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin=""></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css">
 <style>
   html, body, #map { width: 100%; height: 100%; margin: 0; padding: 0; }
   body { background: #e3edf2; }
+
+  /* 2D / 3D switch: two buttons, the active one is filled */
+  .mode-switch { display: flex; }
+  .mode-switch button {
+    width: auto; height: 32px; padding: 0 12px;
+    font: 600 13px/32px system-ui, sans-serif; color: #33434d;
+  }
+  .mode-switch button + button { border-top: 0; border-left: 1px solid #ddd; }
+  .mode-switch button[aria-pressed="true"] { background: #2f6690; color: #fff; cursor: default; }
+  .mode-switch button[aria-pressed="false"]:hover { background: #eef3f6; }
 </style>
 </head>
 <body>
 <div id="map"></div>
-<script>
-  var map = L.map('map', {
-    minZoom: 1,
-    maxZoom: 9,
-    worldCopyJump: false,
-    maxBounds: [[-85.06, -180], [85.06, 180]],
-    maxBoundsViscosity: 1.0
-  }).setView([30, 20], 2);
+<script type="module">
+  import * as maplibregl from 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.mjs';
 
-  // Tiles live next to this file: {z}/{x}/{y}.jpg (native zoom 0-7, zoomed further by scaling)
-  L.tileLayer('{z}/{x}/{y}.jpg', {
+  const BACKGROUND = '#e3edf2';
+
+  // Tiles live next to this file: {z}/{x}/{y}.jpg (native zoom 0-7, zoomed further by scaling).
+  // Tile URLs must be absolute (they are fetched from a web worker), so prefix this page's folder.
+  const tileUrl = new URL('.', location.href).href + '{z}/{x}/{y}.jpg';
+
+  // Mode from the address: #flat opens the 2D map, anything else the globe
+  const modeFromHash = () => (location.hash === '#flat' ? 'flat' : 'globe');
+  let mode = modeFromHash();
+
+  const CENTER = [35, 31.5]; // Israel
+
+  // South polar cap for the globe. The tiles stop at 85.05 S; MapLibre fills the cap
+  // beyond by stretching each pixel of the tiles' last row to the pole, which shows as a
+  // streaky fan. Cover it with ice colour (sampled from the tiles), fading in from 82 S
+  // through thin bands so there is no visible edge. The Arctic edge is plain sea, no fix needed.
+  const ICE = '#e7e4dd';
+  const MERCATOR_EDGE = 85.051129;
+  function southCap(fadeFrom = 82, steps = 24) {
+    const band = (lat1, lat2) => {
+      const ring = [];
+      for (let lon = -180; lon <= 180; lon += 10) ring.push([lon, -lat1]);
+      for (let lon = 180; lon >= -180; lon -= 10) ring.push([lon, -lat2]);
+      ring.push(ring[0]);
+      return ring;
+    };
+    const features = [];
+    for (let i = 0; i < steps; i++) {
+      const t = (i + 1) / steps; // 0..1 towards the edge
+      const lat1 = fadeFrom + (MERCATOR_EDGE - fadeFrom) * i / steps;
+      const lat2 = fadeFrom + (MERCATOR_EDGE - fadeFrom) * t;
+      features.push({
+        type: 'Feature',
+        properties: { opacity: t * t * (3 - 2 * t) }, // smoothstep
+        geometry: { type: 'Polygon', coordinates: [band(lat1, lat2)] }
+      });
+    }
+    return { type: 'FeatureCollection', features };
+  }
+
+  // Start zoom for the globe: the globe's outline fills `fill` of the shorter screen side.
+  // MapLibre draws the globe with radius R = 512 * 2^zoom / (2 pi cos(lat)) px, seen by a
+  // camera 1.5 * screen height away (default 36.87 deg field of view), so its outline has
+  // radius r = D tan(asin(R / (D + R))). Solved for zoom:
+  function globeFitZoom(fill = 0.9) {
+    const el = document.getElementById('map');
+    const D = 1.5 * el.clientHeight;
+    const r = fill * Math.min(el.clientWidth, el.clientHeight) / 2;
+    const s = Math.sin(Math.atan(r / D));
+    const R = D * s / (1 - s);
+    const worldSize = 2 * Math.PI * Math.cos(CENTER[1] * Math.PI / 180) * R;
+    return Math.log2(worldSize / 512);
+  }
+
+  // MapLibre zoom is one step lower than Leaflet's for the same scale
+  // (it counts 512 px per world at zoom 0, Leaflet 256 px).
+  // Old page: zoom 1-9, start 2  ->  here: zoom 0-8; the flat map starts at 1.
+  const map = new maplibregl.Map({
+    container: 'map',
+    center: CENTER,
+    zoom: mode === 'globe' ? globeFitZoom() : 1,
     minZoom: 0,
-    maxNativeZoom: 7,
-    maxZoom: 9,
-    noWrap: true,
-    attribution: 'Made with Natural Earth'
-  }).addTo(map);
+    maxZoom: 8,
+    // One world only. On the flat map this also stops panning past the edges of the
+    // Mercator square (+-180 lon, +-85.05 lat) and zooming out further than the screen.
+    // (No maxBounds: in MapLibre 6.11.2 bounds reaching +-180 lon crash the map.)
+    renderWorldCopies: false,
+    // No attribution box: Natural Earth is public domain (credited in the repo README instead)
+    attributionControl: false,
+    style: {
+      version: 8,
+      projection: { type: mode === 'flat' ? 'mercator' : 'globe' },
+      // No atmosphere halo around the globe (MapLibre draws one unless this is 0)
+      sky: { 'atmosphere-blend': 0 },
+      sources: {
+        rivers: {
+          type: 'raster',
+          tiles: [tileUrl],
+          tileSize: 256,
+          minzoom: 0,
+          maxzoom: 7
+        },
+        southCap: { type: 'geojson', data: southCap() }
+      },
+      layers: [
+        { id: 'background', type: 'background', paint: { 'background-color': BACKGROUND } },
+        { id: 'rivers', type: 'raster', source: 'rivers', paint: { 'raster-fade-duration': 0 } },
+        {
+          id: 'south-cap', type: 'fill', source: 'southCap',
+          layout: { visibility: mode === 'globe' ? 'visible' : 'none' }, // the flat map has no fan
+          paint: { 'fill-color': ICE, 'fill-opacity': ['get', 'opacity'], 'fill-antialias': false }
+        }
+      ]
+    }
+  });
+
+  // --- 2D / 3D switch -------------------------------------------------------
+  class ModeSwitch {
+    onAdd() {
+      this._container = document.createElement('div');
+      this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group mode-switch';
+      this._buttons = {};
+      for (const [key, text, title] of [
+        ['flat', '2D', 'Flat map'],
+        ['globe', '3D', 'Globe']
+      ]) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = text;
+        b.addEventListener('click', () => setMode(key));
+        this._buttons[key] = b;
+        b.dataset.title = title;
+        this._container.appendChild(b);
+      }
+      this.update();
+      return this._container;
+    }
+    update() {
+      for (const [key, b] of Object.entries(this._buttons)) {
+        const active = key === mode;
+        b.setAttribute('aria-pressed', String(active));
+        b.title = active ? `${b.dataset.title} (current view)` : `Switch to ${b.dataset.title.toLowerCase()}`;
+      }
+    }
+    onRemove() { this._container.remove(); }
+  }
+  const modeSwitch = new ModeSwitch();
+
+  // The projection can only change once the style has loaded; a click before that
+  // is remembered in `mode` and applied on 'load'.
+  let styleLoaded = false;
+  const applyProjection = () => {
+    map.setProjection({ type: mode === 'flat' ? 'mercator' : 'globe' });
+    map.setLayoutProperty('south-cap', 'visibility', mode === 'globe' ? 'visible' : 'none');
+  };
+  map.on('load', () => { styleLoaded = true; applyProjection(); });
+
+  function setMode(newMode, { updateHash = true } = {}) {
+    if (newMode === mode) return;
+    mode = newMode;
+    if (styleLoaded) applyProjection();
+    modeSwitch.update();
+    if (updateHash) history.replaceState(null, '', '#' + mode);
+  }
+
+  // Back/forward or an edited address switches too
+  window.addEventListener('hashchange', () => setMode(modeFromHash(), { updateHash: false }));
+
+  map.addControl(modeSwitch, 'top-right');
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
+
+  window.map = map; // for poking at the map from the browser console
 </script>
 </body>
 </html>
