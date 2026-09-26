@@ -1,0 +1,44 @@
+/*
+ * scale-bar.css — the scale ruler at the bottom centre (built by js/scale-bar.js).
+ *
+ * A ruler with ten divisions (the middle tick longer), semi-transparent so the map and stars
+ * show through, readable on both the black space and the light 2D map. It reuses MapLibre's
+ * `.maplibregl-ctrl-scale` class for its basic look and overrides the rest here.
+ */
+
+.maplibregl-ctrl-scale.scale-center {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%); /* centre it horizontally */
+  z-index: 2;                  /* above the map canvases */
+  pointer-events: none;        /* dragging over it still moves the map */
+  box-sizing: border-box;      /* the width set from JS includes the side borders */
+  margin: 0;
+  padding: 2px 6px 11px;       /* the bottom padding keeps the text clear of the ticks */
+  text-align: center;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.6);
+  color: #33434d;
+  border: 2px solid #33434d;
+  border-top: none;
+  border-radius: 0 0 3px 3px;
+  font: 600 12px/16px system-ui, sans-serif;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Division ticks, standing on the bottom line. Their `left` is set from JS. */
+.scale-center .tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 5px;
+  background: #33434d;
+  transform: translateX(-50%);
+}
+
+/* The half-way tick (0.5) is longer and thicker */
+.scale-center .tick.mid {
+  width: 2px;
+  height: 9px;
+}

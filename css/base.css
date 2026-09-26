@@ -1,0 +1,17 @@
+/*
+ * base.css — page layout and background.
+ *
+ * The map fills the whole window. The light blue-grey background (#e3edf2, the map's sea
+ * colour) shows around the flat 2D map; in 3D, star-sky.css turns it black.
+ */
+
+html, body, #map {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body, #map {
+  background: #e3edf2;
+}

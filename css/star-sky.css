@@ -1,0 +1,25 @@
+/*
+ * star-sky.css — black space and the star canvas for the 3D globe view.
+ *
+ * js/star-sky.js puts the class "space" on <html> while the globe is shown. MapLibre's own
+ * canvas is transparent around the globe, so the black background and the star canvas
+ * (which sits underneath the map canvas) show through there.
+ */
+
+html.space body,
+html.space #map {
+  background: #000;
+}
+
+.star-sky {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* never catch clicks: the map underneath must get them */
+  display: none;
+}
+
+html.space .star-sky {
+  display: block;
+}

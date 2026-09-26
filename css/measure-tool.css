@@ -1,0 +1,84 @@
+/*
+ * measure-tool.css — the distance measuring tool (js/measure-tool.js, js/measure-overlay.js).
+ *
+ * The ruler button (blue while the tool is on), the crosshair pointer while measuring,
+ * the drawing canvas and the distance labels.
+ */
+
+/* --- Ruler button --- */
+
+.measure-btn .maplibregl-ctrl-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #33434d; /* the SVG icon draws with currentColor */
+}
+
+.measure-btn[aria-pressed="true"] {
+  background: #2f6690;
+}
+
+.measure-btn[aria-pressed="true"]:hover {
+  background: #2a5c81;
+}
+
+.measure-btn[aria-pressed="true"] .maplibregl-ctrl-icon {
+  color: #fff;
+}
+
+/* Pressed look while the tool is on (the shared rule in controls.css skips pressed buttons) */
+.maplibregl-ctrl-group .measure-btn[aria-pressed="true"]:active,
+.maplibregl-ctrl-group .measure-btn[aria-pressed="true"].pressed {
+  background: #1f4863;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Crosshair pointer while measuring (js sets html.measuring) --- */
+
+html.measuring .maplibregl-canvas-container.maplibregl-interactive,
+html.measuring .maplibregl-canvas {
+  cursor: crosshair;
+}
+
+/* --- Drawing canvas and label layer: cover the map, never catch clicks --- */
+
+.measure-canvas,
+.measure-labels {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.measure-labels {
+  overflow: hidden; /* labels near the edge must not create scrollbars */
+}
+
+/* --- Distance labels. `left`/`top` are set from JS; hidden until placed. --- */
+
+.measure-label {
+  position: absolute;
+  transform: translateY(-50%); /* vertically centred on the given point */
+  display: none;
+  font: 600 12px/16px system-ui, sans-serif;
+  color: #33434d;
+  white-space: nowrap;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1px 6px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* The last point's label: the total distance */
+.measure-label.total {
+  background: #e8412c;
+  color: #fff;
+}
+
+/* The label following the mouse: "+segment = total" */
+.measure-label.live {
+  background: rgba(255, 255, 255, 0.8);
+}
