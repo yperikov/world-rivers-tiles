@@ -37,7 +37,9 @@ js/
   elevation-readout.js  coordinates + height panel in the bottom right corner (below the ruler on screens under 680 px): follows the mouse; on touch, tap to read
 stars.json              9,096 stars (Yale Bright Star Catalogue), made by
                         scripts/make_stars.py in the FirstMap project
-{z}/{x}/{y}.jpg         the map tiles, zoom 0-7
+etopo/{z}/{x}/{y}.jpg   the map tiles in use (ETOPO 2022 elevation + hillshade), zoom 0-7
+{z}/{x}/{y}.jpg         the first tile set (Natural Earth shaded relief), kept but no longer used;
+                        switch back by editing TILE_URL in js/config.js
 ```
 
 How they depend on each other (arrows = imports):
@@ -123,7 +125,10 @@ and no errors in the browser console.
 
 The published copy is the repository `yperikov/world-rivers-tiles` (GitHub Pages). Copy
 `index.html`, `stars.json`, `css/` and `js/` into it, commit and push. The tiles only need
-copying when they have been re-rendered.
+copying when they have been re-rendered: the page needs the `etopo/` folder; the old `{z}` folders
+are not used, so leave them out of the published repo (about 100 MB less). If you change the tile
+set, re-sample `ICE_COLOUR` and `ARCTIC_SEA_COLOUR` in `js/config.js` from the new tiles' edge rows
+(recipe in the FirstMap project's `notes/lessons-learned.md`).
 
 More background (why things are the way they are) is in the FirstMap project's
 `notes/lessons-learned.md` and `notes/web-globe-requirements.md`.

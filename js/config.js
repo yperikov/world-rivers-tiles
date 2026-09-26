@@ -14,8 +14,13 @@
  */
 export const PAGE_FOLDER = new URL('.', location.href).href;
 
-/** XYZ tiles next to index.html: 256 px JPEGs in Web Mercator, made in QGIS for zoom 0-7. */
-export const TILE_URL = PAGE_FOLDER + '{z}/{x}/{y}.jpg';
+/**
+ * XYZ tiles in the "etopo/" folder next to index.html: 256 px JPEGs in Web Mercator, made in QGIS
+ * for zoom 0-7 from the ETOPO 2022 elevation (green-brown land, blue sea floor, hillshade).
+ * The first tile set (Natural Earth shaded relief) is still in the plain "{z}/{x}/{y}.jpg" folders
+ * next to it; point this constant back at PAGE_FOLDER + '{z}/{x}/{y}.jpg' to use it.
+ */
+export const TILE_URL = PAGE_FOLDER + 'etopo/{z}/{x}/{y}.jpg';
 export const TILE_MIN_ZOOM = 0;
 export const TILE_MAX_ZOOM = 7; // beyond this MapLibre scales up the zoom-7 tiles
 
@@ -40,8 +45,10 @@ export const GLOBE_START_FILL = 0.9;
 
 /** Colours used in more than one place. */
 export const BACKGROUND_COLOUR = '#e3edf2'; // light blue-grey, the map's sea colour
-export const ICE_COLOUR = '#e7e4dd';        // Antarctic ice, sampled from the tiles
-export const ARCTIC_SEA_COLOUR = '#9fc3dc'; // Arctic Ocean at the tiles' north edge, sampled from the tiles
+// Both caps are averaged from the outermost 6 pixel rows of the etopo/ tiles at zoom 3 (all 8 columns).
+// The old Natural Earth tiles gave ICE #e7e4dd and ARCTIC_SEA #9fc3dc.
+export const ICE_COLOUR = '#917640';        // Antarctic ice sheet at 85°S: ETOPO heights (~2,500 m) fall in the brown part of the ramp
+export const ARCTIC_SEA_COLOUR = '#2c6190'; // Arctic Ocean at 85°N: deep-sea blue of the ETOPO depth ramp
 export const MEASURE_COLOUR = '#e8412c';    // measure line: red-orange, stands out from rivers and stars
 
 /**
