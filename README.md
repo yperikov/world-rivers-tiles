@@ -1,12 +1,12 @@
 # World Rivers (web tiles)
 
-XYZ map tiles (zoom 0-7, JPEG) of a world rivers map made in QGIS, with a MapLibre GL JS viewer (`index.html`): a 3D globe among real stars with a 2D/3D switch (`#globe` / `#flat` in the URL).
+XYZ map tiles (zoom 0-7, JPEG) of a world rivers map made in QGIS, with a MapLibre GL JS viewer (`index.html`): a 3D globe among real stars with a 2D/3D switch (`#globe` / `#flat` in the URL) and an EN/RU switch for the map labels (`?lang=en` / `?lang=ru`; the last choice is remembered in the browser).
 
-Live: https://yperikov.github.io/world-rivers-tiles/
+Live: https://www.makeearthgreatagain.lol/ (also https://yperikov.github.io/world-rivers-tiles/, which redirects there)
 
-Code: static files, no build step. `index.html` + `css/` + `js/` (one ES module per feature); see [js/README.md](js/README.md) for how it fits together. Also: a scale ruler, a distance measuring tool (WGS84 geodesics via GeographicLib) and a panel with the coordinates and terrain height under the pointer (hover with a mouse, tap on a phone).
+Code: static files, no bundler. `index.html` + `css/` + `js/` (one ES module per feature); see [js/README.md](js/README.md) for how it fits together. MapLibre GL JS and GeographicLib come from jsdelivr, pinned by version and SRI hash. This repository is the published copy of a site built by a deterministic script from the QGIS project (same inputs give byte-identical tiles); edit the source there, not here. Also: a scale ruler, a distance measuring tool (WGS84 geodesics via GeographicLib) and a panel with the coordinates and terrain height under the pointer (hover with a mouse, tap on a phone).
 
-Map tiles: `etopo/{z}/{x}/{y}.jpg` (zoom 0-7): elevation and sea depth from the [ETOPO 2022 Global Relief Model](https://www.ncei.noaa.gov/products/etopo-global-relief-model) (NOAA NCEI, public domain, DOI 10.25921/fd45-gt74), coloured green to brown on land and blue in the sea, with hillshade. Rivers, lakes, borders and labels: [Natural Earth](https://www.naturalearthdata.com/) (public domain).
+Map tiles: `etopo-en/{z}/{x}/{y}.jpg` and `etopo-ru/{z}/{x}/{y}.jpg` (zoom 0-7, labels in English / Russian): elevation and sea depth from the [ETOPO 2022 Global Relief Model](https://www.ncei.noaa.gov/products/etopo-global-relief-model) (NOAA NCEI, public domain, DOI 10.25921/fd45-gt74), coloured green to brown on land and blue in the sea, with hillshade. Rivers, lakes, borders and labels: [Natural Earth](https://www.naturalearthdata.com/) (public domain).
 
 Stars (3D view): Yale Bright Star Catalogue, 5th revised ed. (Hoffleit & Warren 1991), via [CDS](https://cdsarc.cds.unistra.fr/viz-bin/cat/V/50), in `stars.json`.
 

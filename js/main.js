@@ -12,9 +12,11 @@ import {
   START_CENTER, MIN_ZOOM, MAX_ZOOM, FLAT_START_ZOOM, GLOBE_START_FILL
 } from './config.js';
 import { getMode, isGlobe } from './view-mode.js';
+import { getLanguage } from './language.js';
 import { buildStyle } from './map-style.js';
 import { globeFitZoom } from './start-view.js';
 import { addModeSwitch } from './mode-switch.js';
+import { addLanguageSwitch } from './language-switch.js';
 import { addScaleBar } from './scale-bar.js';
 import { addFullscreenButton } from './fullscreen-button.js';
 import { addStarSky } from './star-sky.js';
@@ -43,12 +45,13 @@ const map = new maplibregl.Map({
   // the README of the published repository, together with the star catalogue.
   attributionControl: false,
 
-  style: buildStyle(getMode())
+  style: buildStyle(getMode(), getLanguage())
 });
 
 // Buttons in the top-right corner, stacked in this order from the top:
-// 2D/3D, zoom +/- and compass, full screen, ruler (measure tool).
+// 2D/3D, EN/RU (label language), zoom +/- and compass, full screen, ruler (measure tool).
 addModeSwitch(map);
+addLanguageSwitch(map);
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
 addScaleBar(map); // bottom centre, not a MapLibre control
 addFullscreenButton(map);

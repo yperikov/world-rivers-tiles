@@ -1,12 +1,13 @@
 /*
  * controls.css — the buttons in the top-right corner.
  *
- * Covers the 2D/3D switch (js/mode-switch.js), the pressed look shared by all buttons
+ * Covers the 2D/3D switch (js/mode-switch.js) and the EN/RU switch (js/language-switch.js, which
+ * reuses the `mode-switch` class so both look alike), the pressed look shared by all buttons
  * (js/press-feedback.js adds the `.pressed` class) and a cursor fix for MapLibre's compass.
  * The ruler button has its own styles in measure-tool.css.
  */
 
-/* --- 2D / 3D switch: two buttons side by side, the active one filled blue --- */
+/* --- 2D / 3D and EN / RU switches: two buttons side by side, the active one filled blue --- */
 
 .mode-switch {
   display: flex;
@@ -25,8 +26,11 @@
   border-left: 1px solid #ddd;
 }
 
-/* The active view's button: filled, and no pointer (clicking it does nothing) */
-.mode-switch button[aria-pressed="true"] {
+/* The active view's (or language's) button: filled, and no pointer (clicking it does nothing).
+   The :hover selector must out-rank MapLibre's `.maplibregl-ctrl-group button:not(:disabled):hover`
+   (a 5% grey), which otherwise blanked the button to white-on-white while the mouse was on it. */
+.mode-switch button[aria-pressed="true"],
+.maplibregl-ctrl-group.mode-switch button[aria-pressed="true"]:hover {
   background: #2f6690;
   color: #fff;
   cursor: default;

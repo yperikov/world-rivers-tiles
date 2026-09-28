@@ -15,10 +15,23 @@
 export const PAGE_FOLDER = new URL('.', location.href).href;
 
 /**
- * XYZ tiles in the "etopo/" folder next to index.html: 256 px JPEGs in Web Mercator, made in QGIS
- * for zoom 0-7 from the ETOPO 2022 elevation (green-brown land, blue sea floor, hillshade).
+ * XYZ tiles next to index.html: 256 px JPEGs in Web Mercator, made in QGIS for zoom 0-7 from the
+ * ETOPO 2022 elevation (green-brown land, blue sea floor, hillshade). The labels are baked in,
+ * so there is one tile set per label language (the language switch, js/language-switch.js).
+ *
+ * The folder names must match SITE_TILE_FOLDERS in the FirstMap project's scripts/build.py,
+ * which puts the tiles there (the build checks that every folder is named in this file).
+ * DEFAULT_LANGUAGE is used when neither the address, the viewer's last choice nor the browser
+ * language decides (see js/language.js).
  */
-export const TILE_URL = PAGE_FOLDER + 'etopo/{z}/{x}/{y}.jpg';
+export const LANGUAGES = {
+  en: { folder: 'etopo-en', name: 'English', nativeName: 'English' },
+  ru: { folder: 'etopo-ru', name: 'Russian', nativeName: 'Русский' }
+};
+export const DEFAULT_LANGUAGE = 'en';
+
+/** Tile URL template of a language's tile set. */
+export const tileUrl = (code) => `${PAGE_FOLDER}${LANGUAGES[code].folder}/{z}/{x}/{y}.jpg`;
 export const TILE_MIN_ZOOM = 0;
 export const TILE_MAX_ZOOM = 7; // beyond this MapLibre scales up the zoom-7 tiles
 
@@ -43,7 +56,9 @@ export const GLOBE_START_FILL = 0.9;
 
 /** Colours used in more than one place. */
 export const BACKGROUND_COLOUR = '#e3edf2'; // light blue-grey, the map's sea colour
-// Both caps are averaged from the outermost 6 pixel rows of the etopo/ tiles at zoom 3 (all 8 columns).
+// Both caps are averaged from the outermost 6 pixel rows of the tiles at zoom 3 (all 8 columns);
+// the build measures them (scripts/qgis/cap_colours.py) and warns if a tile set no longer matches.
+// English and Russian tiles give the same colours (checked 2026-09-28).
 // The old Natural Earth tiles gave ICE #e7e4dd and ARCTIC_SEA #9fc3dc.
 export const ICE_COLOUR = '#917640';        // Antarctic ice sheet at 85°S: ETOPO heights (~2,500 m) fall in the brown part of the ramp
 export const ARCTIC_SEA_COLOUR = '#2c6190'; // Arctic Ocean at 85°N: deep-sea blue of the ETOPO depth ramp

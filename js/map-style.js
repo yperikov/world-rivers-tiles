@@ -3,14 +3,15 @@
  *
  * Layers, bottom to top:
  *   1. "background" — plain sea colour, seen only until the tiles have loaded
- *   2. "rivers"     — the world rivers map: raster tiles made in QGIS
+ *   2. "rivers"     — the world rivers map: raster tiles made in QGIS, one set per label
+ *                     language (language-switch.js swaps them with setTiles)
  *   3. "south-cap", "north-cap" — soft caps over the poles, globe only (see below)
  *
  * The measure tool and the star sky are NOT map layers: they draw on their own canvases
  * (see measure-overlay.js and star-sky.js for why).
  */
 import {
-  TILE_URL, TILE_MIN_ZOOM, TILE_MAX_ZOOM,
+  tileUrl, TILE_MIN_ZOOM, TILE_MAX_ZOOM,
   BACKGROUND_COLOUR, ICE_COLOUR, ARCTIC_SEA_COLOUR, MERCATOR_EDGE
 } from './config.js';
 import { GLOBE, FLAT } from './view-mode.js';
@@ -62,8 +63,8 @@ function capLayer(id, source, colour, mode) {
   };
 }
 
-/** The full MapLibre style for the given view (GLOBE or FLAT). */
-export function buildStyle(mode) {
+/** The full MapLibre style for the given view (GLOBE or FLAT) and label language ('en', 'ru'). */
+export function buildStyle(mode, language) {
   return {
     version: 8,
     projection: { type: mode === FLAT ? 'mercator' : 'globe' },
@@ -75,7 +76,7 @@ export function buildStyle(mode) {
     sources: {
       rivers: {
         type: 'raster',
-        tiles: [TILE_URL],
+        tiles: [tileUrl(language)],
         tileSize: 256,
         minzoom: TILE_MIN_ZOOM,
         maxzoom: TILE_MAX_ZOOM

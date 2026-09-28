@@ -7,8 +7,9 @@
  * css/controls.css (and css/measure-tool.css for the ruler button).
  *
  * Buttons that do nothing when clicked get no feedback: disabled ones (e.g. "+" at maximum
- * zoom) and the 2D/3D button of the view already on screen. The ruler button does react
- * while switched on (aria-pressed="true"), because clicking it switches it off.
+ * zoom) and the active button of the 2D/3D or EN/RU switch (both use the `mode-switch` class).
+ * The ruler button does react while switched on (aria-pressed="true"), because clicking it
+ * switches it off.
  */
 
 const MIN_PRESSED_MS = 150;

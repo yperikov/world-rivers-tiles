@@ -5,8 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>World Rivers</title>
 
+<!-- Integrity (SRI) hashes for the pinned CDN files: the browser refuses a file whose content
+     differs from the hash, so the page always runs exactly the library code it was tested with.
+     Hashes are jsdelivr's own (data.jsdelivr.com/v1/packages/npm/<package>@<version>?structure=flat,
+     "hash" = base64 SHA-256). When upgrading a library, change the version AND the hash here.
+     The import map covers ES module imports (maplibre-gl.mjs and the shared chunk it imports);
+     it must come before any module script. MapLibre's web worker (maplibre-gl-worker.mjs) is
+     started by MapLibre itself and cannot be given a hash. -->
+<script type="importmap">
+{
+  "integrity": {
+    "https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.mjs": "sha256-P1VWYpVYNkRhf+F9AIo2xYBBS4xx3S4fz/Ewneb97l0=",
+    "https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl-shared.mjs": "sha256-drX1W97pKMZdWSaEqv8rkT1QtrF7DsYzToiwm2qkeWA="
+  }
+}
+</script>
+
 <!-- MapLibre's own styles. Keep the version in step with js/maplibre.js. -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.css"
+      integrity="sha256-2GF9hCGTDj/GGFNlQA54jDdMGl2fvoeZmZjAvBSiAtM=" crossorigin="anonymous">
 
 <!-- Our styles, one file per feature -->
 <link rel="stylesheet" href="css/base.css">
@@ -18,7 +35,8 @@
 
 <!-- GeographicLib geodesics (WGS84 ellipsoid) for the measure tool. A plain script, not a
      module: it sets window.geodesic and is ready before the module code below runs. -->
-<script src="https://cdn.jsdelivr.net/npm/geographiclib-geodesic@2.2.0/geographiclib-geodesic.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/geographiclib-geodesic@2.2.0/geographiclib-geodesic.min.js"
+        integrity="sha256-BuNRKQSzRldfR18U0LJ+oJedvNKw7d6/Xx7u/SNDlbU=" crossorigin="anonymous"></script>
 
 <!-- All page code starts here. See js/README.md for how the files fit together. -->
 <script type="module" src="js/main.js"></script>
