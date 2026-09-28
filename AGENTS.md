@@ -17,6 +17,11 @@ start zoom on a hidden tab, the atmosphere halo, etc.). Background and full requ
 in the parent project's `notes/web-globe-requirements.md` and `notes/lessons-learned.md`
 (search *MapLibre viewer*).
 
+**Cache-busting:** the build writes `?v=<checksum>` into the site's `index.html` for every
+`css/` and `js/` file (module imports through the import map), so browsers never mix old and
+new code after a publish. Keep the `<link>` / `<script type="module">` tags in `index.html` in
+their current simple form so the build finds them.
+
 **Library integrity:** `index.html` pins MapLibre and GeographicLib on jsdelivr with SRI
 hashes (MapLibre's module files through the import map). Upgrading a library means changing
 the version and its hash together; the comment in `index.html` says where the hashes come from.
@@ -45,7 +50,8 @@ Stop the local server before building: the build replaces the `exports/tiles/` f
 user explicitly says to push. A request to change, delete, or update the site is not
 permission to push. Commit in that repo only when the user asks.
 
-The live site (https://yperikov.github.io/world-rivers-tiles/) is published from a
+The live site (https://www.makeearthgreatagain.lol/, a custom domain: keep the `CNAME` file in
+that repo; https://yperikov.github.io/world-rivers-tiles/ redirects there) is published from a
 **separate git repository**, `world-rivers-tiles`, a sibling folder to `FirstMap` — not this
 one. To update it, after the user has asked to push: copy the built site (`exports/tiles/`:
 `index.html`, `stars.json`, `css/`, `js/`, this `AGENTS.md`, and the tile folders if they were

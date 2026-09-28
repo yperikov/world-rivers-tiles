@@ -7,7 +7,7 @@ Source: `web/` in the FirstMap project. `scripts/build.py` there assembles the s
 (`exports/tiles/`) from this folder plus `stars.json` and the tiles; `world-rivers-tiles` is a
 published copy of that site.
 
-Live: https://yperikov.github.io/world-rivers-tiles/
+Live: https://www.makeearthgreatagain.lol/ (https://yperikov.github.io/world-rivers-tiles/ redirects there)
 
 ## Files
 
@@ -113,6 +113,12 @@ used as `sha256-<hash>`), then re-test.
 7. **The atmosphere halo is on by default** in MapLibre; `map-style.js` sets
    `atmosphere-blend: 0` to remove it.
 8. **The flat map shows no stars and no polar caps**; both are globe-only on purpose.
+9. **Cache-busting is added by the build**, not written here: the site's `index.html` gets
+   `?v=<checksum>` on every `css/` file and on `js/main.js`, and an `"imports"` section in the
+   import map that sends every `js/*.js` import to its versioned address (GitHub Pages lets
+   browsers keep files for 10 minutes, and old and new modules must never mix). Keep module
+   imports relative (`./config.js`) and the tags in `index.html` simple so the build finds them.
+   A new module file needs nothing extra: the build versions every `js/*.js`.
 
 ## Testing locally
 

@@ -11,12 +11,37 @@
      "hash" = base64 SHA-256). When upgrading a library, change the version AND the hash here.
      The import map covers ES module imports (maplibre-gl.mjs and the shared chunk it imports);
      it must come before any module script. MapLibre's web worker (maplibre-gl-worker.mjs) is
-     started by MapLibre itself and cannot be given a hash. -->
+     started by MapLibre itself and cannot be given a hash.
+     The FirstMap build (scripts/build.py) adds an "imports" section to this import map and a ?v=
+     version to our own css/ and js/ addresses (cache-busting after a publish); do not add them
+     here by hand. -->
 <script type="importmap">
 {
   "integrity": {
     "https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl.mjs": "sha256-P1VWYpVYNkRhf+F9AIo2xYBBS4xx3S4fz/Ewneb97l0=",
     "https://cdn.jsdelivr.net/npm/maplibre-gl@6.11.2/dist/maplibre-gl-shared.mjs": "sha256-drX1W97pKMZdWSaEqv8rkT1QtrF7DsYzToiwm2qkeWA="
+  },
+  "imports": {
+    "./js/config.js": "./js/config.js?v=529ae40d4e",
+    "./js/elevation-readout.js": "./js/elevation-readout.js?v=2d8f4b8fc6",
+    "./js/elevation.js": "./js/elevation.js?v=87652e8b70",
+    "./js/fullscreen-button.js": "./js/fullscreen-button.js?v=2179268ea1",
+    "./js/geodesy.js": "./js/geodesy.js?v=28503687a0",
+    "./js/globe-camera.js": "./js/globe-camera.js?v=44ad5cf521",
+    "./js/language-switch.js": "./js/language-switch.js?v=5f5a8fa65b",
+    "./js/language.js": "./js/language.js?v=49a8a471b1",
+    "./js/main.js": "./js/main.js?v=30b215e753",
+    "./js/map-point.js": "./js/map-point.js?v=faacc6418f",
+    "./js/map-style.js": "./js/map-style.js?v=f6e116b7e6",
+    "./js/maplibre.js": "./js/maplibre.js?v=47f002dc3a",
+    "./js/measure-overlay.js": "./js/measure-overlay.js?v=5b3ebdabe6",
+    "./js/measure-tool.js": "./js/measure-tool.js?v=ad192f18da",
+    "./js/mode-switch.js": "./js/mode-switch.js?v=d8058dc290",
+    "./js/press-feedback.js": "./js/press-feedback.js?v=6e09792352",
+    "./js/scale-bar.js": "./js/scale-bar.js?v=294e0821b2",
+    "./js/star-sky.js": "./js/star-sky.js?v=7b14e51501",
+    "./js/start-view.js": "./js/start-view.js?v=11d89b7fbf",
+    "./js/view-mode.js": "./js/view-mode.js?v=7b35a2e8b9"
   }
 }
 </script>
@@ -26,12 +51,12 @@
       integrity="sha256-2GF9hCGTDj/GGFNlQA54jDdMGl2fvoeZmZjAvBSiAtM=" crossorigin="anonymous">
 
 <!-- Our styles, one file per feature -->
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/star-sky.css">
-<link rel="stylesheet" href="css/controls.css">
-<link rel="stylesheet" href="css/scale-bar.css">
-<link rel="stylesheet" href="css/measure-tool.css">
-<link rel="stylesheet" href="css/elevation-readout.css">
+<link rel="stylesheet" href="css/base.css?v=8d0146f6e5">
+<link rel="stylesheet" href="css/star-sky.css?v=5dd03b9280">
+<link rel="stylesheet" href="css/controls.css?v=566d35b572">
+<link rel="stylesheet" href="css/scale-bar.css?v=d6ec44821c">
+<link rel="stylesheet" href="css/measure-tool.css?v=b29047d1ef">
+<link rel="stylesheet" href="css/elevation-readout.css?v=ff5df87850">
 
 <!-- GeographicLib geodesics (WGS84 ellipsoid) for the measure tool. A plain script, not a
      module: it sets window.geodesic and is ready before the module code below runs. -->
@@ -39,7 +64,7 @@
         integrity="sha256-BuNRKQSzRldfR18U0LJ+oJedvNKw7d6/Xx7u/SNDlbU=" crossorigin="anonymous"></script>
 
 <!-- All page code starts here. See js/README.md for how the files fit together. -->
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js?v=30b215e753"></script>
 </head>
 <body>
 <div id="map"></div>
