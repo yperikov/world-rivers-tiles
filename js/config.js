@@ -17,8 +17,6 @@ export const PAGE_FOLDER = new URL('.', location.href).href;
 /**
  * XYZ tiles in the "etopo/" folder next to index.html: 256 px JPEGs in Web Mercator, made in QGIS
  * for zoom 0-7 from the ETOPO 2022 elevation (green-brown land, blue sea floor, hillshade).
- * The first tile set (Natural Earth shaded relief) is still in the plain "{z}/{x}/{y}.jpg" folders
- * next to it; point this constant back at PAGE_FOLDER + '{z}/{x}/{y}.jpg' to use it.
  */
 export const TILE_URL = PAGE_FOLDER + 'etopo/{z}/{x}/{y}.jpg';
 export const TILE_MIN_ZOOM = 0;

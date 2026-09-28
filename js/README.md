@@ -37,9 +37,7 @@ js/
   elevation-readout.js  coordinates + height panel in the bottom right corner (below the ruler on screens under 680 px): follows the mouse; on touch, tap to read
 stars.json              9,096 stars (Yale Bright Star Catalogue), made by
                         scripts/make_stars.py in the FirstMap project
-etopo/{z}/{x}/{y}.jpg   the map tiles in use (ETOPO 2022 elevation + hillshade), zoom 0-7
-{z}/{x}/{y}.jpg         the first tile set (Natural Earth shaded relief), kept but no longer used;
-                        switch back by editing TILE_URL in js/config.js
+etopo/{z}/{x}/{y}.jpg   the map tiles (ETOPO 2022 elevation + hillshade), zoom 0-7
 ```
 
 How they depend on each other (arrows = imports):
@@ -125,9 +123,9 @@ and no errors in the browser console.
 
 The published copy is the repository `yperikov/world-rivers-tiles` (GitHub Pages). Copy
 `index.html`, `stars.json`, `css/` and `js/` into it, commit and push. The tiles only need
-copying when they have been re-rendered: the page needs the `etopo/` folder. The published repo also keeps the
-old `{z}` folders (first tile set, unused; the user chose to keep them, 2026-09-26). If you change the tile
-set, re-sample `ICE_COLOUR` and `ARCTIC_SEA_COLOUR` in `js/config.js` from the new tiles' edge rows
+copying when they have been re-rendered: the page needs the `etopo/` folder. The Natural Earth
+folders `0`–`7` were deleted on 2026-09-28. If you change the tile set, re-sample `ICE_COLOUR` and
+`ARCTIC_SEA_COLOUR` in `js/config.js` from the new tiles' edge rows
 (recipe in the FirstMap project's `notes/lessons-learned.md`).
 
 More background (why things are the way they are) is in the FirstMap project's
