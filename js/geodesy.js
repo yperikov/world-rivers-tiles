@@ -2,7 +2,7 @@
  * geodesy.js — distances and shortest paths on the real Earth, for the measure tool.
  *
  * Uses GeographicLib (Charles Karney's algorithms, the same maths as PROJ), loaded in
- * index.html as a plain script from jsdelivr: `geographiclib-geodesic` 2.2.0, MIT licence.
+ * index.html as a plain script from vendor/: `geographiclib-geodesic` 2.2.0, MIT licence.
  * It puts its API on `window.geodesic`.
  *
  * Why the real Earth (WGS84 ellipsoid) and not a sphere: on a sphere distances are off by up
